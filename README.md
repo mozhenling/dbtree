@@ -1,8 +1,8 @@
-# DBtree Python Package for Machinery Fault Envolope Analysis  
+# DBTREE Python Package for Machinery Fault Envolope Analysis  
 
-This repository provides the proposed dynamic bandit tree search method together with popular filters and various fault indexes to facilitate future studies of envelope analysis-based machinery fault diagnosis. More methods will be added as well in the future.  
+This repository provides the proposed dynamic bandit tree search method together with popular filters and various fault indexes to facilitate future studies of envelope analysis-based machinery fault diagnosis. More methods may be added as well in the future.
 
-The codes are based on the paper entitled _" Intelligent Fault Informative Frequency Band Search for Machinery Fault Diagnosis Assisted by A Dynamic Bandit Tree Method"_, which has been submitted to IEEE/ASME TRANSACTIONS ON MECHATRONICS for peer reviews. 
+The codes are mainly based on the paper entitled _" Intelligent Fault Informative Frequency Band Search for Machinery Fault Diagnosis Assisted by A Dynamic Bandit Tree Method"_, which has been accepted by IEEE/ASME TRANSACTIONS ON MECHATRONICS for a future publication. 
 
 ## 1 Key Requirements
     numpy = 1.21.5
@@ -61,7 +61,7 @@ Many of the indexes can be easily used to replace the kurtosis in fast kurtogram
 
 ## 3 Tutorial Guide
 
-More tutorials will be provided in the Jupyter notebook files later. 
+More tutorials may be provided in the Jupyter notebook files later. 
 
 
 
