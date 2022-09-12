@@ -59,7 +59,7 @@ Many of the indexes can be easily used to replace the kurtosis in fast kurtogram
         the tree structure, etc.. 
     (5) Some other tools. 
 
-## 3 Tutorial Guide
+## 3 Tutorials
 
 For optimization problems, see [tutorial_dbt_optim.ipynb](https://github.com/mozhenling/dbtree/blob/main/tutorial_dbt_optim.ipynb)  
 For fault diagnosis based on bandit algorithms, see [tutorial_dbt_diag.ipynb](https://github.com/mozhenling/dbtree/blob/main/tutorial_dbt_diag.ipynb)  
