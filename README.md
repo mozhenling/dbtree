@@ -2,7 +2,7 @@
 
 This repository provides the proposed dynamic bandit tree search method together with popular filters and various fault indexes to facilitate future studies of envelope analysis-based machinery fault diagnosis. More methods may be added as well in the future.
 
-The codes are mainly based on the paper entitled _" Intelligent Fault Informative Frequency Band Search for Machinery Fault Diagnosis Assisted by A Dynamic Bandit Tree Method"_, which has been accepted for publication in the **IEEE/ASME Transactions on Mechatronics** ([preprint](https://www.researchgate.net/publication/363469478_Intelligent_Informative_Frequency_Band_Searching_Assisted_by_A_Dynamic_Bandit_Tree_Method_for_Machine_Fault_Diagnosis)). 
+The codes are mainly based on the paper entitled _" Intelligent Fault Informative Frequency Band Search for Machinery Fault Diagnosis Assisted by A Dynamic Bandit Tree Method"_, which has been accepted for publication in the **IEEE/ASME Transactions on Mechatronics** ([Preprint](https://www.researchgate.net/publication/363469478_Intelligent_Informative_Frequency_Band_Searching_Assisted_by_A_Dynamic_Bandit_Tree_Method_for_Machine_Fault_Diagnosis), [Early Access](https://ieeexplore.ieee.org/document/9900070)). 
 
 ## 1 Key Requirements
     numpy = 1.21.5
