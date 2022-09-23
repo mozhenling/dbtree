@@ -68,4 +68,11 @@ Many of the indexes can be easily used to replace the kurtosis in fast kurtogram
 More tutorials may be provided in the Jupyter notebook files later. 
 
 
+## 4 Citation 
+
+We would really appreciate it if you could cite our paper once the repo is used.   
+
+    Z. Mo, Z. Zhang, Q. Miao and K. -L. Tsui, "Intelligent Informative Frequency Band Searching Assisted by
+    a Dynamic Bandit Tree Method for Machine Fault Diagnosis," in IEEE/ASME Transactions on Mechatronics,
+    2022, doi: 10.1109/TMECH.2022.3206435.
 
