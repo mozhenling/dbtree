@@ -18,7 +18,7 @@ parula_map = LinearSegmentedColormap.from_list('parula', cm_data)
 def show_ses_xy(ses_x, ses_y, fs, f_target=None, harN = 3, SSES=True, title='', xlabel = 'Frequency (Hz)',
              ylabel = 'Normalized amplitude',  figsize = (3.5, 1.8), dpi = 144, dev1 = 0.025,
              mark_estimate = True, sig_len_original = None, fre2seq = None,
-             fig_save_path= None, fig_format = 'png', fontsize = 8, linewidth = 1,non_text = False ):
+             fig_save_path= None, fig_format = 'png', fontsize = 8, linewidth = 1, non_text = False ):
 
     """
     -Applicable for findexgaram
