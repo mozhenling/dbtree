@@ -72,7 +72,14 @@ More tutorials may be provided in the Jupyter notebook files later.
 
 We would really appreciate it if you could cite our paper once the repo is used.   
 
-    Z. Mo, Z. Zhang, Q. Miao and K. -L. Tsui, "Intelligent Informative Frequency Band Searching Assisted
-    by a Dynamic Bandit Tree Method for Machine Fault Diagnosis," in IEEE/ASME Transactions on Mechatronics,
-    vol. 28, no. 2, pp. 770-780, April 2023, doi: 10.1109/TMECH.2022.3206435..
+    @article{mo2022intelligent,
+    title={Intelligent informative frequency band searching assisted by a dynamic bandit tree method for machine fault diagnosis},
+    author={Mo, Zhenling and Zhang, Zijun and Miao, Qiang and Tsui, Kwok-Leung},
+    journal={IEEE/ASME Transactions on Mechatronics},
+    volume={28},
+    number={2},
+    pages={770--780},
+    year={2022},
+    publisher={IEEE}
+    }
 

@@ -4,7 +4,7 @@ echo '------- update git and remote --------'
 
 git add .
 
-git commit . -m 'save dict to .json'
+git commit . -m 'update citation'
 
 git push origin master
 
