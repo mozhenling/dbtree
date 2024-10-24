@@ -61,9 +61,9 @@ Many of the indexes can be easily used to replace the kurtosis in fast kurtogram
 
 ## 3 Tutorials
 
--For optimization problems, see [tutorial_dbt_optim.ipynb](https://github.com/mozhenling/dbtree/blob/main/tutorial_dbt_optim.ipynb)  
--For fault diagnosis based on bandit algorithms, see [tutorial_dbt_diag.ipynb](https://github.com/mozhenling/dbtree/blob/main/tutorial_dbt_diag.ipynb)  
--For fault diagnosis based on findexgram, see [tutorial_findexgram_diag.ipynb](https://github.com/mozhenling/dbtree/blob/main/tutorial_findexgram_diag.ipynb)
+-For optimization problems, see [tutorial_dbt_optim.ipynb](https://github.com/mozhenling/dbtree/blob/master/tutorial_dbt_optim.ipynb)  
+-For fault diagnosis based on bandit algorithms, see [tutorial_dbt_diag.ipynb](https://github.com/mozhenling/dbtree/blob/master/tutorial_dbt_diag.ipynb)  
+-For fault diagnosis based on findexgram, see [tutorial_findexgram_diag.ipynb](https://github.com/mozhenling/dbtree/blob/master/tutorial_findexgram_diag.ipynb)
 
 More tutorials may be provided in the Jupyter notebook files later. 
 
