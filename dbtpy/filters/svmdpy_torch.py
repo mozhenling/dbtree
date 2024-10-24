@@ -205,7 +205,7 @@ def filter_VKnet_time_torch(Alpha, omega_axis, modes_fc, sum_omega_old, f_hat_pl
     used to construct variational filter from SVMD without mirroring
     alpha = [alpha_1, alpha_2, alpha_3]
     omega_axis: (signal_size)
-    modes_fc: (batch_size, channel_size, 1,fc_size) fc_size = modes_size
+    modes_fc: (batch_size, channel_size, 1,fc_size) fc_size = modes_size,1 is used for broadcasting
     sum_omega_old: (max_mode_num + 1, batch_size, channel_size, signal_size,dtype = torch.cdouble)
     f_hat_plus: (batch_size, channel_size, signal_size), one-side is zeros
     f_hat_negt_: nagtive counterpart of f_hat_plus, all zeros, for future use
@@ -234,7 +234,7 @@ def filter_VKnet_real_torch(Alpha, omega_axis, modes_fc, sum_omega_old, f_hat_pl
     used to construct variational filter from SVMD without mirroring
     alpha = [alpha_1, alpha_2, alpha_3]
     omega_axis: (signal_size)
-    modes_fc: (batch_size, channel_size, 1, mode_num) fc_size = modes_size
+    modes_fc: (batch_size, channel_size, 1, mode_num) fc_size = modes_size, 1 is used for broadcasting
     sum_omega_old: (max_mode_num + 1, batch_size, channel_size, signal_size,dtype = torch.cdouble)
     f_hat_plus: (batch_size, channel_size, signal_size), one-side is zeros
     f_hat_negt_: nagtive counterpart of f_hat_plus, all zeros, for future use
@@ -253,7 +253,7 @@ def filter_VKnet_real_torch(Alpha, omega_axis, modes_fc, sum_omega_old, f_hat_pl
      # if running out of memory, use cfloat instead of cdouble
      # store the power spectrum
     mode_filter_ps = torch.zeros(max_mode_num, batch_size, channel_size, signal_size, dtype = torch.float).to(device)
-    modes_fc=modes_fc.permute(3,0,1,2) # (mode_num, batch_size, channel_size, 1) # channel = 1
+    modes_fc=modes_fc.permute(3,0,1,2) # (mode_num, batch_size, channel_size, 1) # 1 is used for broadcasting
 
     Alpha = (Alpha + torch.zeros_like(mode_filter_ps, dtype = torch.float).permute(1,2,3,0)) #  batch_size, channel_size, signal_size,max_mode_num
     Alpha=Alpha.permute(3,0,1,2)
