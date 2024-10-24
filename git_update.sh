@@ -4,7 +4,7 @@ echo '------- update git and remote --------'
 
 git add .
 
-git commit . -m 'update citation'
+git commit . -m 'update SVMD'
 
 git push origin master
 
