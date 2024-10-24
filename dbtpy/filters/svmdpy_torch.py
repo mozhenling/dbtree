@@ -80,7 +80,7 @@ def SVMD_VKnet_torch(waveforms, Alpha, omega_init, tau, tol, max_iter_num, max_m
     t = torch.arange(1,T+1)/T  
     # fs = 1./T
     # Spectral Domain discretization
-    omega_axis = (t-0.5-(1/T)).to(device) 
+    omega_axis = (t-0.5-(1/T)).to(device)
    #-------- FFT of signal(and Hilbert transform concept=making it one-sided)
    # for real inputs, the negative frequencies are redundant
    # rfft contains only the positive frequencies below the Nyquist frequency
@@ -112,9 +112,9 @@ def SVMD_VKnet_torch(waveforms, Alpha, omega_init, tau, tol, max_iter_num, max_m
         udiff = tol + tol
         #omediff = tol+np.spacing(1)
        # Initializing omega_d for the next run
-        omega_d = torch.zeros(batch_size, channel_size, max_iter_num).to(device)
+        omega_d = torch.zeros(batch_size, channel_size, 1, max_iter_num).to(device)
         #omega_d[1] = omega_d[n_inner];
-        omega_d[:, :, 0] = omega_init[:,:, n_outer]
+        omega_d[:, :, 0, 0] = omega_init[:,:, n_outer]
         # dual variables vector
         #np.zeros([Niter, len(freqs)], dtype = complex)
          # if running out of memory, use cfloat instead of cdouble
@@ -128,22 +128,22 @@ def SVMD_VKnet_torch(waveforms, Alpha, omega_init, tau, tol, max_iter_num, max_m
         while(udiff > tol and  n_inner < max_iter_num -1 ):
         #while(  n_inner < max_iter_num -1 ):    
             #----------- update u_hat_d
-            u_hat_d[n_inner+1,:, :, :] = (f_hat_plus + (u_hat_d[n_inner,:, :,:] * \
-            (Alpha[n_outer]**2) * (omega_axis - omega_d[:,:,n_inner]).view(-1,channel_size,signal_size)**4) + lambda_hat[n_inner,:, :,:] / 2) \
-            /((1 + (Alpha[n_outer]**2) * (omega_axis - omega_d[:,:,n_inner])**4).view(-1,channel_size,signal_size) * \
-            (1 + 2 * Alpha[n_outer] * (omega_axis - omega_d[:,:,n_inner]).view(-1,channel_size,signal_size)**2 + \
-            sum_omega_old[n_outer, :, :,:]))            
+            u_hat_d[n_inner+1,:, :, :] = (f_hat_plus + (u_hat_d[n_inner,:, :,:] *
+            (Alpha[n_outer]**2) * (omega_axis - omega_d[:,:,:,n_inner]).view(-1,channel_size,signal_size)**4) + lambda_hat[n_inner,:, :,:] / 2) \
+            /((1 + (Alpha[n_outer]**2) * (omega_axis - omega_d[:,:,:,n_inner])**4).view(-1,channel_size,signal_size) *
+            (1 + 2 * Alpha[n_outer] * (omega_axis - omega_d[:,:,:,n_inner]).view(-1,channel_size,signal_size)**2 +
+            sum_omega_old[n_outer, :, :,:]))
             #-----------update omega_d
             # omega_axis_temp = omega_axis + torch.zeros_like(u_hat_d)
-            omega_d[:,:,n_inner+1] = (torch.tensordot(omega_axis_dot[n_inner+1,:, :, T//2:T], 
+            omega_d[:,:,:,n_inner+1] = (torch.tensordot(omega_axis_dot[n_inner+1,:, :, T//2:T],
                                                       (torch.abs(u_hat_d[n_inner+1,:, :, T//2:T])**2), dims = 3) \
             /torch.sum(torch.abs(u_hat_d[n_inner+1, :, :,T//2:T])**2))#.view(batch_size, channel_size,-1)      
             #------ update lambda_hat
             lambda_hat[n_inner+1,:, :,:] = lambda_hat[n_inner,:, :,:] +  tau *  \
                 ( f_hat_plus - ( u_hat_d[n_inner+1,:, :,:] + \
-                ( (Alpha[n_outer]**2 * (omega_axis - omega_d[:,:,n_inner+1]).view(-1,channel_size,signal_size)** 4) * \
+                ( (Alpha[n_outer]**2 * (omega_axis - omega_d[:,:,:,n_inner+1]).view(-1,channel_size,signal_size)** 4) * \
                 (f_hat_plus - u_hat_d[n_inner+1,:, :,:] - sum_mode_hat_d + lambda_hat[n_inner,:, :,:]/2)- \
-                sum_mode_hat_d / (1+2*Alpha[n_outer]**2 * (omega_axis -omega_d[:,:,n_inner+1]).view(-1,channel_size,signal_size)**4)) + \
+                sum_mode_hat_d / (1+2*Alpha[n_outer]**2 * (omega_axis -omega_d[:,:,:,n_inner+1]).view(-1,channel_size,signal_size)**4)) + \
                 sum_mode_hat_d ) ) 
             n_inner = n_inner + 1
             udiff = torch.zeros(1).to(device)
@@ -154,9 +154,9 @@ def SVMD_VKnet_torch(waveforms, Alpha, omega_init, tau, tol, max_iter_num, max_m
             #omega_d = abs(omega_d[n_inner] - omega_d[n_inner - 1]) / abs(omega_d[n_inner])
         mode_hat_d[n_outer,:,:,:]= u_hat_d[n_inner,:, :,:]
         sum_mode_hat_d = sum_mode_hat_d + u_hat_d[n_inner,:, :,:]
-        sum_omega_old[n_outer+1,:, :,:]= sum_omega_old[n_outer,:, :,:] + 1 / ((Alpha[n_outer]**2) * (omega_axis - omega_d[:,:,n_inner]).view(-1,channel_size,signal_size)**4)
+        sum_omega_old[n_outer+1,:, :,:]= sum_omega_old[n_outer,:, :,:] + 1 / ((Alpha[n_outer]**2) * (omega_axis - omega_d[:,:,:,n_inner]).view(-1,channel_size,signal_size)**4)
         # mode_fc[:, n_outer] = omega_d.reshape(max_iter_num)
-        modes_fc[:,:,n_outer] = omega_d[:,:,n_inner]
+        modes_fc[:,:,n_outer] = omega_d[:,:,0,n_inner]
         n_outer = n_outer + 1
         
     # ------------------ Part 3: Signal Reconstruction-------------------------
@@ -176,7 +176,7 @@ def filter_VKnet_torch(Alpha, omega_axis, modes_fc, sum_omega_old, f_hat_plus, f
     used to construct variational filter from SVMD without mirroring
     alpha = [alpha_1, alpha_2, alpha_3]
     omega_axis: (signal_size)
-    modes_fc: (batch_size, channel_size, fc_size) fc_size = modes_size
+    modes_fc: (batch_size, channel_size, 1, fc_size) fc_size = modes_size
     sum_omega_old: (max_mode_num + 1, batch_size, channel_size, signal_size,dtype = torch.cdouble)
     f_hat_plus: (batch_size, channel_size, signal_size), one-side is zeros
     f_hat_negt_: nagtive counterpart of f_hat_plus, all zeros, for future use
@@ -186,10 +186,10 @@ def filter_VKnet_torch(Alpha, omega_axis, modes_fc, sum_omega_old, f_hat_plus, f
      # if running out of memory, use cfloat instead of cdouble
     filter_hat_d = torch.zeros(max_mode_num, batch_size, channel_size, signal_size, dtype = torch.cfloat).to(device) 
     for i in range(max_mode_num):
-        g_omega = (Alpha[i]**2) * (omega_axis - modes_fc[:,:,i]).view(-1,channel_size,signal_size)**4 
+        g_omega = (Alpha[i]**2) * (omega_axis - modes_fc[:,:,:,i]).view(-1,channel_size,signal_size)**4
         # denomenator
-        h_omega =((1 + (Alpha[i]**2) * (omega_axis - modes_fc[:,:,i]).view(-1,channel_size,signal_size)**4) * \
-               (1 + 2 * Alpha[i] * (omega_axis - modes_fc[:,:,i]).view(-1,channel_size,signal_size)**2 + \
+        h_omega =((1 + (Alpha[i]**2) * (omega_axis - modes_fc[:,:,:,i]).view(-1,channel_size,signal_size)**4) * \
+               (1 + 2 * Alpha[i] * (omega_axis - modes_fc[:,:,:,i]).view(-1,channel_size,signal_size)**2 + \
                  sum_omega_old[i,:,:,:]))
         filter_hat_d[i,:,:,:] = f_hat_plus / (h_omega  - g_omega ) # treate as one mode 
     
@@ -205,7 +205,7 @@ def filter_VKnet_time_torch(Alpha, omega_axis, modes_fc, sum_omega_old, f_hat_pl
     used to construct variational filter from SVMD without mirroring
     alpha = [alpha_1, alpha_2, alpha_3]
     omega_axis: (signal_size)
-    modes_fc: (batch_size, channel_size, fc_size) fc_size = modes_size
+    modes_fc: (batch_size, channel_size, 1,fc_size) fc_size = modes_size
     sum_omega_old: (max_mode_num + 1, batch_size, channel_size, signal_size,dtype = torch.cdouble)
     f_hat_plus: (batch_size, channel_size, signal_size), one-side is zeros
     f_hat_negt_: nagtive counterpart of f_hat_plus, all zeros, for future use
@@ -215,10 +215,10 @@ def filter_VKnet_time_torch(Alpha, omega_axis, modes_fc, sum_omega_old, f_hat_pl
      # if running out of memory, use cfloat instead of cdouble
     filter_hat_d = torch.zeros(max_mode_num, batch_size, channel_size, signal_size, dtype = torch.cfloat).to(device) 
     for i in range(max_mode_num):
-        g_omega = (Alpha[i]**2) * (omega_axis - modes_fc[:,:,i]).view(-1,channel_size,signal_size)**4 
+        g_omega = (Alpha[i]**2) * (omega_axis - modes_fc[:,:,:,i]).view(-1,channel_size,signal_size)**4
         # denomenator
-        h_omega =((1 + (Alpha[i]**2) * (omega_axis - modes_fc[:,:,i]).view(-1,channel_size,signal_size)**4) * \
-               (1 + 2 * Alpha[i] * (omega_axis - modes_fc[:,:,i]).view(-1,channel_size,signal_size)**2 + \
+        h_omega =((1 + (Alpha[i]**2) * (omega_axis - modes_fc[:,:,:,i]).view(-1,channel_size,signal_size)**4) * \
+               (1 + 2 * Alpha[i] * (omega_axis - modes_fc[:,:,:,i]).view(-1,channel_size,signal_size)**2 + \
                  sum_omega_old[i,:,:,:]))
         filter_hat_d[i,:,:,:] = 1 / (h_omega  - g_omega ) # treate as one mode 
     
@@ -234,7 +234,7 @@ def filter_VKnet_real_torch(Alpha, omega_axis, modes_fc, sum_omega_old, f_hat_pl
     used to construct variational filter from SVMD without mirroring
     alpha = [alpha_1, alpha_2, alpha_3]
     omega_axis: (signal_size)
-    modes_fc: (batch_size, channel_size, mode_num) fc_size = modes_size
+    modes_fc: (batch_size, channel_size, 1, mode_num) fc_size = modes_size
     sum_omega_old: (max_mode_num + 1, batch_size, channel_size, signal_size,dtype = torch.cdouble)
     f_hat_plus: (batch_size, channel_size, signal_size), one-side is zeros
     f_hat_negt_: nagtive counterpart of f_hat_plus, all zeros, for future use
@@ -253,9 +253,8 @@ def filter_VKnet_real_torch(Alpha, omega_axis, modes_fc, sum_omega_old, f_hat_pl
      # if running out of memory, use cfloat instead of cdouble
      # store the power spectrum
     mode_filter_ps = torch.zeros(max_mode_num, batch_size, channel_size, signal_size, dtype = torch.float).to(device)
-    modes_fc=modes_fc.permute(2,0,1) # (mode_num, batch_size, channel_size) # channel = 1
-    modes_fc=modes_fc.unsqueeze(-1) # (mode_num, batch_size, channel_size, 1)
-    
+    modes_fc=modes_fc.permute(3,0,1,2) # (mode_num, batch_size, channel_size, 1) # channel = 1
+
     Alpha = (Alpha + torch.zeros_like(mode_filter_ps, dtype = torch.float).permute(1,2,3,0)) #  batch_size, channel_size, signal_size,max_mode_num
     Alpha=Alpha.permute(3,0,1,2)
     g_omega = ((Alpha**2) * (omega_axis - modes_fc)**4).view(max_mode_num, batch_size, channel_size, signal_size)
