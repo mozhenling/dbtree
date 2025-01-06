@@ -12,8 +12,70 @@ from dbtpy.findexes.harmonics import harEstimation
 from dbtpy.findexes.sigto import sig_real_to_ses
 from dbtpy.tools.colorMap import cm_data
 from matplotlib.colors import LinearSegmentedColormap
-
+from scipy.io import savemat
+import os
 parula_map = LinearSegmentedColormap.from_list('parula', cm_data)
+
+def fftspec(fs, sig, normalized=True, oneside=True):
+    """
+    Inputs:
+        fs: sampling frequency
+        sig: signal
+    Outputs:
+        frq_x: frequency values
+        frq_y: frequency amplitudes
+        normalized: normalized to 0-1
+        oneside: return only one side of spectrum
+
+    """
+    num_points = len(sig)
+    frq_x = np.linspace(0, fs, num_points)  # frequency axis, df=fs/num_points
+    frq_y = np.abs(np.fft.fft(sig))
+    if normalized:
+        frq_y = frq_y / max(frq_y)
+    if oneside:
+        return frq_x[:num_points//2], frq_y[:num_points//2]
+    else:
+        return frq_x, frq_y
+
+def fontsizes(fontsize):
+    axis_label_fontsize = fontsize + 0.5
+    title_fontsize = fontsize + 1
+    tick_fontsize = fontsize
+    return axis_label_fontsize, title_fontsize,tick_fontsize
+
+def formated_plot(x=None, y=None, xlabel='x', ylabel='y', title=None, fontsize = 10,
+                  figdata=None, xlim=None, ylim=None, filename='figdata-formated_plot',
+                  save_dir = None, format = 'png', figsize = (8, 4), dpi = 300):
+
+    axis_label_fontsize, title_fontsize,tick_fontsize = fontsizes(fontsize)
+
+    plt.figure(figsize=figsize,dpi=dpi)
+    if figdata is not None:
+        x, y=figdata['x'], figdata['y']
+    plt.plot(x, y)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    if title is not None:
+        plt.title(title, fontsize=title_fontsize)
+    plt.xlabel(xlabel, fontsize=axis_label_fontsize)
+    plt.ylabel(ylabel, fontsize=axis_label_fontsize)
+    plt.xticks(fontsize=tick_fontsize)
+    plt.yticks(fontsize=tick_fontsize)
+    if xlim is not None:
+        plt.xlim(xlim)
+    if ylim is not None:
+        plt.ylim(ylim)
+
+    plt.tight_layout()
+    plt.show()
+
+    if save_dir is not None:
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir, exist_ok=True)
+        savemat(os.path.join(save_dir, filename+'.'+'mat' ), {'x': x, 'y':y})
+        plt.savefig(os.path.join(save_dir, filename+'.'+format ), format=format)
 
 def show_ses_xy(ses_x, ses_y, fs, f_target=None, harN = 3, SSES=True, title='', xlabel = 'Frequency (Hz)',
              ylabel = 'Normalized amplitude',  figsize = (3.5, 1.8), dpi = 144, dev1 = 0.025,

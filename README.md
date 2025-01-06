@@ -57,7 +57,8 @@ Many of the indexes can be easily used to replace the kurtosis in fast kurtogram
         the heatmap of findexgram,
         the fitness curve,
         the tree structure, etc.. 
-    (5) Some other tools. 
+	(5) Angualr resampling (order_tracking.py)
+    (6) Some other tools. 
 
 ## 3 Tutorials
 
